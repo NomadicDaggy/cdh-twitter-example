@@ -38,7 +38,7 @@ import twitter4j.StatusDeletionNotice;
 import twitter4j.StatusListener;
 import twitter4j.TwitterStream;
 import twitter4j.TwitterStreamFactory;
-import twitter4j.auth.AccessToken;
+import twitter4j.auth.OAuth2Authorization;
 import twitter4j.conf.ConfigurationBuilder;
 import twitter4j.json.DataObjectFactory;
 
@@ -54,10 +54,7 @@ public class TwitterSource extends AbstractSource
       LoggerFactory.getLogger(TwitterSource.class);
 
   /** Information necessary for accessing the Twitter API */
-  private String consumerKey;
-  private String consumerSecret;
-  private String accessToken;
-  private String accessTokenSecret;
+  private String oAuth2AccessToken;
 
   private String[] keywords;
 
@@ -71,10 +68,7 @@ public class TwitterSource extends AbstractSource
    */
   @Override
   public void configure(Context context) {
-    consumerKey = context.getString(TwitterSourceConstants.CONSUMER_KEY_KEY);
-    consumerSecret = context.getString(TwitterSourceConstants.CONSUMER_SECRET_KEY);
-    accessToken = context.getString(TwitterSourceConstants.ACCESS_TOKEN_KEY);
-    accessTokenSecret = context.getString(TwitterSourceConstants.ACCESS_TOKEN_SECRET_KEY);
+    oAuth2AccessToken = context.getString(TwitterSourceConstants.BEARER_TOKEN_KEY);
 
     String keywordString = context.getString(TwitterSourceConstants.KEYWORDS_KEY, "");
     if (keywordString.trim().length() == 0) {
@@ -87,10 +81,7 @@ public class TwitterSource extends AbstractSource
     }
 
     ConfigurationBuilder cb = new ConfigurationBuilder();
-    cb.setOAuthConsumerKey(consumerKey);
-    cb.setOAuthConsumerSecret(consumerSecret);
-    cb.setOAuthAccessToken(accessToken);
-    cb.setOAuthAccessTokenSecret(accessTokenSecret);
+    cb.setOAuth2AccessToken(oAuth2AccessToken);
     cb.setJSONStoreEnabled(true);
     cb.setIncludeEntitiesEnabled(true);
 
@@ -136,7 +127,7 @@ public class TwitterSource extends AbstractSource
     };
 
     logger.debug("Setting up Twitter sample stream using consumer key {} and" +
-          " access token {}", new String[] { consumerKey, accessToken });
+          " access token {}", new String[] { oAuth2AccessToken });
     // Set up the stream's listener (defined above),
     twitterStream.addListener(listener);
 
