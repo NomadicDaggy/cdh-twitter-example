@@ -81,6 +81,8 @@ public class TwitterSource extends AbstractSource
     }
 
     ConfigurationBuilder cb = new ConfigurationBuilder();
+    logger.debug(cb.getClass().getPackage().getSpecificationVersion());
+    logger.debug(cb.getClass().getPackage().getImplementationVersion());
     cb.setOAuth2AccessToken(oAuth2AccessToken);
     cb.setJSONStoreEnabled(true);
     cb.setIncludeEntitiesEnabled(true);
